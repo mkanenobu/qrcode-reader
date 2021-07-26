@@ -1,37 +1,94 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import styles from "./App.module.scss";
 import { getMedia } from "./helpers/get-media";
+import { initQrCodeDetector } from "./helpers/barcode-reader";
+import useInterval from "use-interval";
+import Linkify from "react-linkify";
 
-function App() {
-  const [mediaStream, setMediaStream] = useState<MediaStream | undefined>(
-    undefined
-  );
+export const App = () => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [error, setError] = useState<{ message: string } | null>(null);
 
-  useEffect(() => {
-    getMedia({ audio: true }).then(setMediaStream);
+  const qrCodeDetector = useMemo(() => {
+    const detector = initQrCodeDetector();
+    if (!detector) {
+      setError({ message: "This browser is not support to Barcode" });
+    }
+    return detector;
+  }, []);
+
+  const initCameraStream = useCallback((video: HTMLVideoElement) => {
+    getMedia({ video: true })
+      .then((stream) => {
+        console.log(stream);
+        if (stream) {
+          video.srcObject = stream;
+          video.play();
+          setError(null);
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+        setError({ message: "No camera permission" });
+      });
   }, []);
 
   useEffect(() => {
-    if (mediaStream?.active) {
-      console.log(mediaStream.getVideoTracks().map((s) => s.getSettings()));
+    if (videoRef.current) {
+      initCameraStream(videoRef.current);
     }
-  }, [mediaStream]);
+  }, [videoRef]);
+
+  const [detected, setDetected] = useState<unknown | null>(null);
+
+  const detect = useCallback((video: HTMLVideoElement) => {
+    qrCodeDetector
+      .detect(video)
+      .then((res: Array<unknown>) => {
+        if (res.length >= 1) {
+          setDetected(res[0]);
+          console.log("detected", res);
+        }
+      })
+      .catch(() => {
+        // Do Nothing
+      });
+  }, []);
+
+  useInterval(() => {
+    if (!detected && videoRef.current) {
+      detect(videoRef.current);
+    }
+  }, 100);
 
   return (
-    <div className={styles.app}>
-      <header className={styles.appHeader}>
+    <main className={styles.container}>
+      <div className={styles.content}>
+        <p>QRCode Reader</p>
+        {error && <p>{error.message}</p>}
+        <video ref={videoRef} className={styles.video} />
         <button
+          className={styles.clearButton}
           onClick={() => {
-            const streamTracks = mediaStream?.getTracks();
-            console.log(streamTracks);
-            console.log(streamTracks?.[0].getCapabilities());
+            setDetected(null);
           }}
         >
-          echo stream
+          Clear
         </button>
-      </header>
-    </div>
-  );
-}
 
-export default App;
+        {detected && typeof detected === "object" && "rawValue" in detected && (
+          // @ts-expect-error
+          <Linkify>{detected.rawValue}</Linkify>
+        )}
+
+        <footer className={styles.footer}>&copy;2021 mkanenobu</footer>
+      </div>
+    </main>
+  );
+};
