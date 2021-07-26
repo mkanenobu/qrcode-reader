@@ -1,0 +1,50 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-20.04
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Set Node.js version
+        id: set_version
+        run: echo "##[set-output name=node;]$(cat ./.node-version)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.3.0
+        with:
+          node-version: "${{ steps.set_version.outputs.node }}"
+
+      - name: Setup yarn
+        id: setup_yarn
+        run: npm install --global yarn
+
+      - name: Setup node modules cache
+        uses: actions/cache@v2.1.6
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+
+      - name: Setup node modules
+        run: yarn install --frozen-lockfile
+
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
