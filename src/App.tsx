@@ -89,7 +89,12 @@ export const App = () => {
           )}
         </main>
 
-        <footer className={styles.footer}>&copy;2021 mkanenobu</footer>
+        <footer className={styles.footer}>
+          <p className={styles.clearMarginP}>&copy;2021 mkanenobu</p>
+          <p className={styles.clearMarginP}>
+            QRコードはデンソーウェーブの登録商標です
+          </p>
+        </footer>
       </div>
     </div>
   );
