@@ -10,6 +10,7 @@ import { getMedia } from "./helpers/get-media";
 import { initQrCodeDetector } from "./helpers/barcode-reader";
 import useInterval from "use-interval";
 import Linkify from "react-linkify";
+import isMobile from "ismobilejs";
 
 export const App = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -24,7 +25,12 @@ export const App = () => {
   }, []);
 
   const initCameraStream = useCallback((video: HTMLVideoElement) => {
-    getMedia({ video: { facingMode: { exact: "environment" } } })
+    const mobile = isMobile(window.navigator).any;
+    // NOTE: if mobile, use rear camera
+    // Maybe there is better way
+    getMedia({
+      video: mobile ? { facingMode: { exact: "environment" } } : true,
+    })
       .then((stream) => {
         console.log(stream);
         if (stream) {

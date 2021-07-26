@@ -8,4 +8,4 @@ npm run dev
 
 gh-pages URL
 
-https://mkanenobu.github.io/qrcode-reader-pwa/
+https://mkanenobu.github.io/qrcode-reader-pwa/index.html

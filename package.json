@@ -8,6 +8,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "ismobilejs": "^1.1.1",
     "jsqr": "^1.4.0",
     "localforage": "^1.9.0",
     "qrcode-reader": "^1.0.4",
