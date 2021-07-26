@@ -7,9 +7,16 @@
   }
 }
 
-.content {
+.contentContainer {
   max-width: 768px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+
+.main {
   display: flex;
   flex-direction: column;
 }
@@ -19,9 +26,10 @@
 }
 
 .clearButton {
+  margin: 0.5rem 0;
 }
 
 .footer {
-  position: relative;
+  position: absolute;
   bottom: 0;
 }

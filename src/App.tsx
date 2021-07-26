@@ -68,27 +68,29 @@ export const App = () => {
   }, 100);
 
   return (
-    <main className={styles.container}>
-      <div className={styles.content}>
-        <p>QRCode Reader</p>
-        {error && <p>{error.message}</p>}
-        <video ref={videoRef} className={styles.video} />
-        <button
-          className={styles.clearButton}
-          onClick={() => {
-            setDetected(null);
-          }}
-        >
-          Clear
-        </button>
+    <div className={styles.container}>
+      <div className={styles.contentContainer}>
+        <main className={styles.main}>
+          <p>QRCode Reader</p>
+          {error && <p>{error.message}</p>}
+          <video ref={videoRef} className={styles.video} />
+          <button
+            className={styles.clearButton}
+            onClick={() => {
+              setDetected(null);
+            }}
+          >
+            Clear
+          </button>
 
-        {detected && typeof detected === "object" && "rawValue" in detected && (
-          // @ts-expect-error
-          <Linkify>{detected.rawValue}</Linkify>
-        )}
+          {detected && typeof detected === "object" && "rawValue" in detected && (
+            // @ts-expect-error
+            <Linkify>{detected.rawValue}</Linkify>
+          )}
+        </main>
 
         <footer className={styles.footer}>&copy;2021 mkanenobu</footer>
       </div>
-    </main>
+    </div>
   );
 };
