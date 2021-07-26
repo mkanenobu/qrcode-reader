@@ -24,7 +24,7 @@ export const App = () => {
   }, []);
 
   const initCameraStream = useCallback((video: HTMLVideoElement) => {
-    getMedia({ video: true })
+    getMedia({ video: { facingMode: { exact: "environment" } } })
       .then((stream) => {
         console.log(stream);
         if (stream) {
