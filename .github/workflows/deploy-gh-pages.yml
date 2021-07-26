@@ -41,6 +41,8 @@ jobs:
       - name: Setup node modules
         run: yarn install --frozen-lockfile
 
+      - name: Build
+        run: yarn build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
