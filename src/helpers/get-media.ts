@@ -1,9 +1,5 @@
-export const getMedia = async (
+export const getMedia = (
   constraints?: MediaStreamConstraints
 ): Promise<MediaStream | undefined> => {
-  try {
-    return navigator.mediaDevices.getUserMedia(constraints);
-  } catch (err) {
-    alert("Can't get user media.");
-  }
+  return navigator.mediaDevices.getUserMedia(constraints);
 };

@@ -24,32 +24,42 @@ export const App = () => {
     return detector;
   }, []);
 
-  const initCameraStream = useCallback((video: HTMLVideoElement) => {
-    const mobile = isMobile(window.navigator).any;
-    // NOTE: if mobile, use rear camera
-    // Maybe there is better way
-    getMedia({
-      video: mobile ? { facingMode: { exact: "environment" } } : true,
-    })
-      .then((stream) => {
-        console.log(stream);
-        if (stream) {
-          video.srcObject = stream;
-          video.play();
-          setError(null);
-        }
+  const initVideoStream = useCallback(
+    (video: HTMLVideoElement) => {
+      console.log("Initialize video stream");
+
+      const mobile = isMobile(window.navigator).phone;
+
+      // NOTE: use rear camera if mobile
+      // Maybe there is better way
+      getMedia({
+        video: mobile ? { facingMode: { exact: "environment" } } : true,
       })
-      .catch((e) => {
-        console.error(e);
-        setError({ message: "No camera permission" });
-      });
-  }, []);
+        .then((stream) => {
+          console.log(stream);
+          if (stream) {
+            video.srcObject = stream;
+            video.play();
+            setError(null);
+            console.log("Video stream is initialized");
+          } else {
+            console.log("Video stream is undefined");
+            setError({ message: "Camera is not available" });
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+          setError({ message: "Camera is not available" });
+        });
+    },
+    [setError]
+  );
 
   useEffect(() => {
     if (videoRef.current) {
-      initCameraStream(videoRef.current);
+      initVideoStream(videoRef.current);
     }
-  }, [videoRef]);
+  }, [videoRef, initVideoStream]);
 
   const [detected, setDetected] = useState<unknown | null>(null);
 
