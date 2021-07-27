@@ -15,6 +15,7 @@ export default defineConfig({
         background_color: "#279dfb",
         display: "standalone",
         orientation: "portrait",
+        prefer_related_applications: true,
         scope: "https://mkanenobu.github.io/qrcode-reader-pwa/",
         start_url: "https://mkanenobu.github.io/qrcode-reader-pwa/index.html",
         icons: [
