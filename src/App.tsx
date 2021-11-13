@@ -127,6 +127,10 @@ export const App = () => {
           <p className={styles.clearMarginP}>
             QRコードはデンソーウェーブの登録商標です
           </p>
+          <div id="build-id" >
+            {/* @ts-ignore, defined in vite.config.js */}
+            buildId: {__BUILD_ID}
+          </div>
         </footer>
       </div>
     </div>
