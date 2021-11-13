@@ -1,10 +1,18 @@
 import { defineConfig } from "vite";
+import { execSync } from "child_process";
 import reactRefresh from "@vitejs/plugin-react-refresh";
 import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   publicDir: "public",
+  define: {
+    __BUILD_ID: JSON.stringify(
+      execSync("git rev-parse HEAD", {
+        encoding: "utf8",
+      })
+    ),
+  },
   plugins: [
     reactRefresh(),
     VitePWA({
