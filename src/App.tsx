@@ -28,12 +28,14 @@ export const App = () => {
     (video: HTMLVideoElement) => {
       console.log("Initialize video stream");
 
-      const mobile = isMobile(window.navigator).phone;
+      const mobile = isMobile(window.navigator);
 
-      // NOTE: use rear camera if mobile
-      // Maybe there is better way
+      // NOTE: use rear camera on mobile or tablet
       getMedia({
-        video: mobile ? { facingMode: { exact: "environment" } } : true,
+        video:
+          mobile.phone || mobile.tablet
+            ? { facingMode: { exact: "environment" } }
+            : true,
       })
         .then((stream) => {
           console.log(stream);
