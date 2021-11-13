@@ -14,19 +14,21 @@ import isMobile from "ismobilejs";
 
 export const App = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [error, setError] = useState<{ message: string } | null>(null);
+  const [barcodeApiUnAvailableError, setBarcodeApiUnAvailableError] =
+    useState<boolean>(false);
+  const [videoError, setVideoError] = useState<boolean>(false);
 
   const qrCodeDetector = useMemo(() => {
     try {
       return getQrCodeDetector();
     } catch (_e) {
-      setError({ message: "This browser is not support to Barcode" });
+      setBarcodeApiUnAvailableError(true);
     }
   }, []);
 
   const initVideoStream = useCallback(
     (video: HTMLVideoElement): void => {
-      if (!qrCodeDetector || error) {
+      if (!qrCodeDetector || barcodeApiUnAvailableError) {
         return;
       }
 
@@ -46,19 +48,19 @@ export const App = () => {
           if (stream) {
             video.srcObject = stream;
             video.play();
-            setError(null);
+            setVideoError(false);
             console.log("Video stream is initialized");
           } else {
             console.log("Video stream is undefined");
-            setError({ message: "Camera is not available" });
+            setVideoError(true);
           }
         })
         .catch((e) => {
           console.error(e);
-          setError({ message: "Camera is not available" });
+          setVideoError(true);
         });
     },
-    [setError, qrCodeDetector, error]
+    [setBarcodeApiUnAvailableError, qrCodeDetector, barcodeApiUnAvailableError]
   );
 
   useEffect(() => {
@@ -94,8 +96,10 @@ export const App = () => {
       <div className={styles.contentContainer}>
         <main className={styles.main}>
           <p>QRCode Reader</p>
-          {error ? (
-            <p>{error.message}</p>
+          {barcodeApiUnAvailableError ? (
+            <p>This browser is not support to BarcodeDetector API.</p>
+          ) : videoError ? (
+            <p>Camera is not available.</p>
           ) : (
             <>
               <video ref={videoRef} className={styles.video} />
