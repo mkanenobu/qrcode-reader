@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import styles from "./App.module.scss";
 import { getMedia } from "./helpers/get-media";
-import { initQrCodeDetector } from "./helpers/barcode-reader";
+import { getQrCodeDetector } from "./helpers/barcode-reader";
 import useInterval from "use-interval";
 import Linkify from "react-linkify";
 import isMobile from "ismobilejs";
@@ -17,15 +17,19 @@ export const App = () => {
   const [error, setError] = useState<{ message: string } | null>(null);
 
   const qrCodeDetector = useMemo(() => {
-    const detector = initQrCodeDetector();
-    if (!detector) {
+    try {
+      return getQrCodeDetector();
+    } catch (_e) {
       setError({ message: "This browser is not support to Barcode" });
     }
-    return detector;
   }, []);
 
   const initVideoStream = useCallback(
-    (video: HTMLVideoElement) => {
+    (video: HTMLVideoElement): void => {
+      if (!qrCodeDetector || error) {
+        return;
+      }
+
       console.log("Initialize video stream");
 
       const mobile = isMobile(window.navigator);
@@ -54,7 +58,7 @@ export const App = () => {
           setError({ message: "Camera is not available" });
         });
     },
-    [setError]
+    [setError, qrCodeDetector, error]
   );
 
   useEffect(() => {
@@ -67,7 +71,7 @@ export const App = () => {
 
   const detect = useCallback((video: HTMLVideoElement) => {
     qrCodeDetector
-      .detect(video)
+      ?.detect(video)
       .then((res: Array<unknown>) => {
         if (res.length >= 1) {
           setDetected(res[0]);
@@ -90,20 +94,27 @@ export const App = () => {
       <div className={styles.contentContainer}>
         <main className={styles.main}>
           <p>QRCode Reader</p>
-          {error && <p>{error.message}</p>}
-          <video ref={videoRef} className={styles.video} />
-          <button
-            className={styles.clearButton}
-            onClick={() => {
-              setDetected(null);
-            }}
-          >
-            Clear
-          </button>
+          {error ? (
+            <p>{error.message}</p>
+          ) : (
+            <>
+              <video ref={videoRef} className={styles.video} />
+              <button
+                className={styles.clearButton}
+                onClick={() => {
+                  setDetected(null);
+                }}
+              >
+                Clear
+              </button>
 
-          {detected && typeof detected === "object" && "rawValue" in detected && (
-            // @ts-expect-error
-            <Linkify>{detected.rawValue}</Linkify>
+              {detected &&
+                typeof detected === "object" &&
+                "rawValue" in detected && (
+                  // @ts-expect-error
+                  <Linkify>{detected.rawValue}</Linkify>
+                )}
+            </>
           )}
         </main>
 
