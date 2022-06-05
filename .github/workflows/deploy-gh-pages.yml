@@ -42,7 +42,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build --base=/qrcode-reader-pwa/
+        run: yarn build --base=/qrcode-reader/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

@@ -24,8 +24,8 @@ export default defineConfig({
         display: "standalone",
         orientation: "portrait",
         prefer_related_applications: true,
-        scope: "https://mkanenobu.github.io/qrcode-reader-pwa/",
-        start_url: "https://mkanenobu.github.io/qrcode-reader-pwa/index.html",
+        scope: "https://mkanenobu.github.io/qrcode-reader/",
+        start_url: "https://mkanenobu.github.io/qrcode-reader/index.html",
         icons: [
           {
             src: "/icons/icon-72x72.png",
