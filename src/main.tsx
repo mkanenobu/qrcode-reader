@@ -1,11 +1,16 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import "./index.css";
 import { App } from "./App";
+import { GeistProvider, CssBaseline } from "@geist-ui/core";
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root")!);
+
+root.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+    <GeistProvider>
+      <CssBaseline />
+      <App />
+    </GeistProvider>
+  </React.StrictMode>
 );
