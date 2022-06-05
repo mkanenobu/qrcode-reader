@@ -20,33 +20,29 @@ jobs:
 
       - name: Set Node.js version
         id: set_version
-        run: echo "##[set-output name=node;]$(cat ./.node-version)"
+        run: echo "##[set-output name=node;]$(cat package.json | jq -r '.volta.node')"
 
       - name: Setup Node.js
         uses: actions/setup-node@v2.3.0
         with:
           node-version: "${{ steps.set_version.outputs.node }}"
 
-      - name: Setup yarn
-        id: setup_yarn
-        run: npm install --global yarn
-
       - name: Setup node modules cache
         uses: actions/cache@v2.1.6
         with:
           path: ./node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-modules-
 
       - name: Setup node modules
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: Build
-        run: yarn build --base=/qrcode-reader/
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+        run: npm run build --base=/qrcode-reader/
+#
+#      - name: Deploy
+#        uses: peaceiris/actions-gh-pages@v3
+#        if: ${{ github.ref == 'refs/heads/main' }}
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./dist
