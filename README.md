@@ -13,6 +13,6 @@ npm install
 npm run dev
 ```
 
-## gh-pages URL
+## Deployed URL
 
-https://mkanenobu.github.io/qrcode-reader/index.html
+https://qrcode-reader.pages.dev/
