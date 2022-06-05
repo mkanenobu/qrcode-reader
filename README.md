@@ -3,7 +3,7 @@
 ## Setup
 
 ```bash
-volta install node@"$(cat package.json | jq -r ".volta.node")"
+nodenv install "$(cat .node-version)"
 npm install
 ```
 
@@ -15,4 +15,4 @@ npm run dev
 
 ## gh-pages URL
 
-https://mkanenobu.github.io/qrcode-reader-pwa/index.html
+https://mkanenobu.github.io/qrcode-reader/index.html
