@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from "react";
-import { Button, Link, Page, Spacer, Text } from "@geist-ui/core";
+import React, { useState } from "react";
+import { Button, Spacer, Text } from "@geist-ui/core";
 import styles from "./App.module.scss";
 import Linkify from "react-linkify";
 import { QrCodeReader } from "./components/QrCodeReader";
